@@ -1,11 +1,5 @@
-function genRandomGraph(num_nodes, num_links, statusArray){
-  nodes = d3.range(num_nodes).map(function(d){
-                                    return {label: d,
-                                            r: 10,
-                                            sex: ~~d3.randomUniform(2)()
-                                            }});
-
-
+function genRandomGraph(num_nodes, num_links, groupProbs){
+  nodes = d3.range(num_nodes).map(function(d){ return {label: d, r: 10, sex: ~~d3.randomUniform(2)(), group: ~~assignGroup(groupProbs)}});
   links = getRandomSubarray(allPairs(nodes), num_links);
 
   for(link in links){
@@ -20,7 +14,13 @@ function genRandomGraph(num_nodes, num_links, statusArray){
   }});
 
   for(n=0; n<empty_nodes.length; n++){
-    links.push({source:empty_nodes[n], target: ~~d3.randomUniform(num_nodes)()})
+    while(true){
+      target = ~~d3.randomUniform(num_nodes)();
+      if(target!=n){
+        break;
+      }
+    }
+    links.push({source:empty_nodes[n], target:target, force: 0.1})
   }
 
   return {nodes: nodes, links: links}
@@ -47,15 +47,15 @@ function getRandomSubarray(arr, size) {
     return shuffled.slice(0, size);
 }
 
-function randomStatus(p_sexist, p_neutral, p_ally){
-  rand = Math.random();
-  if(rand <= p_sexist){
-    return 'sexist'
-  }
-  else if(rand <= (p_sexist + p_neutral)){
-    return "neutral"
-  }
-  else{
-    return "ally"
+function assignGroup(groupProbs){
+  n = Math.random();
+  keys = Object.keys(groupProbs);
+  total_prob = 0;
+
+  for(i=0;i < keys.length; i++){
+    if(n <= total_prob){
+      return keys[i];
+    }
+    total_prob += groupProbs[keys[i]];
   }
 }

@@ -1,24 +1,25 @@
 
-function plotGraph(data) {
+function plotGraph(data, width, height) {
 
-        var width = 960, height = 500, colors = d3.scaleOrdinal(d3.schemeCategory10);
-
-        console.log(colors);
+        var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
         var svg = d3.select("body").append("svg");
 
         svg.attr("width", width)
           .attr("height", height);
 
-        var linkForce = d3.forceLink()
-                          .strength(function(d) { return d.force })
-                          .id(function(d) { return d.index })
+
+        linkForce =  d3.forceLink()
+                       .strength(function(d){return d.force})
+                       .id(function(d){ return d.index })
 
 
         var simulation = d3.forceSimulation()
-            .force("link", linkForce)
-            .force("charge", d3.forceManyBody().strength(-50))
+            .force("link",linkForce)
+            .force("charge", d3.forceManyBody().strength(-100))
             .force("center", d3.forceCenter(width / 2, height / 2))
+          //  .force("y", d3.forceY(0))
+          //  .force("x", d3.forceX(0))
 
         var link = svg.append("g")
             .attr("class", "links")
