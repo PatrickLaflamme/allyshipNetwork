@@ -1,5 +1,5 @@
-function genRandomGraph(num_nodes, num_links){
-  nodes = d3.range(num_nodes).map(function(d){ return {label: d, r: 10}});
+function genRandomGraph(num_nodes, num_links, groupProbs){
+  nodes = d3.range(num_nodes).map(function(d){ return {label: d, r: 10, sex: ~~d3.randomUniform(2)(), group: ~~assignGroup(groupProbs)}});
   links = getRandomSubarray(allPairs(nodes), num_links);
 
   for(link in links){
@@ -45,4 +45,17 @@ function getRandomSubarray(arr, size) {
         shuffled[i] = temp;
     }
     return shuffled.slice(0, size);
+}
+
+function assignGroup(groupProbs){
+  n = Math.random();
+  keys = Object.keys(groupProbs);
+  total_prob = 0;
+
+  for(i=0;i < keys.length; i++){
+    if(n <= total_prob){
+      return keys[i];
+    }
+    total_prob += groupProbs[keys[i]];
+  }
 }

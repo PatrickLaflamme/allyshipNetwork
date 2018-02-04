@@ -3,8 +3,6 @@ function plotGraph(data, width, height) {
 
         var colors = d3.scaleOrdinal(d3.schemeCategory10);
 
-        console.log(colors);
-
         var svg = d3.select("body").append("svg");
 
         svg.attr("width", width)
