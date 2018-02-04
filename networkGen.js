@@ -1,17 +1,21 @@
 function genRandomGraph(num_nodes, num_links, groupProbs){
-  nodes = d3.range(num_nodes).map(function(d){ return {label: d, r: 10, sex: ~~d3.randomUniform(2)(), group: ~~assignGroup(groupProbs)}});
+  nodes = d3.range(num_nodes).map(function(d){ return {r: 10, sex: ~~d3.randomUniform(2)(), group: assignGroup(groupProbs)}});
   links = getRandomSubarray(allPairs(nodes), num_links);
 
-  for(link in links){
-    arr = []
+  arr = []
 
-    arr.push(link.source);
-    arr.push(link.target);
+  for(i=0; i < links.length; i++){
+
+    arr.push(links[i].source);
+    arr.push(links[i].target);
   }
 
-  empty_nodes = nodes.filter(function(d){for(n=0; n<arr.length; n++){
-    if(d!=arr[n]) return true;
-  }});
+  empty_nodes = nodes.filter(function(d, i){
+    for(n=0; n<arr.length; n++){
+      if(arr && i==arr[n]){return false;}
+    };
+    return true;
+  });
 
   for(n=0; n<empty_nodes.length; n++){
     while(true){
@@ -53,9 +57,13 @@ function assignGroup(groupProbs){
   total_prob = 0;
 
   for(i=0;i < keys.length; i++){
+    total_prob += groupProbs[keys[i]].prob;
     if(n <= total_prob){
-      return keys[i];
+      return groupProbs[keys[i]].info;
     }
-    total_prob += groupProbs[keys[i]];
   }
+}
+
+function simStep(data){
+  data.nodes
 }
