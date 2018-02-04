@@ -5,4 +5,4 @@ var num_links = 20;
 
 data = genRandomGraph(num_nodes,num_links);
 
-plotGraph(data);
+plotGraph(data, 500, 500);

@@ -14,7 +14,13 @@ function genRandomGraph(num_nodes, num_links){
   }});
 
   for(n=0; n<empty_nodes.length; n++){
-    links.push({source:empty_nodes[n], target:~~d3.randomUniform(num_nodes)()})
+    while(true){
+      target = ~~d3.randomUniform(num_nodes)();
+      if(target!=n){
+        break;
+      }
+    }
+    links.push({source:empty_nodes[n], target:target, force: 0.1})
   }
 
   return {nodes: nodes, links: links}
@@ -24,7 +30,7 @@ function allPairs (nodes){ // generate every unique pair of nodes.
   pairArray = [];
   for(i=0; i < nodes.length; i++){
     for(j=i; j < nodes.length; j++){
-      pairArray.push({source: i, target: j});
+      pairArray.push({source: i, target: j, force: 0.1});
     };
   };
   return pairArray;
