@@ -11,4 +11,9 @@ var groups = {
 
 data = genRandomGraph(num_nodes,num_links, groups);
 
-plotGraph(data, 500, 500);
+viz = plotGraph(data, 500, 500);
+
+d3.interval(function () {
+  data.links = data.links.map(function(d){d.force = d.force + (Math.random() - 0.5)/10; return d})
+  viz = updateGraph(viz, data);
+}, 1000);

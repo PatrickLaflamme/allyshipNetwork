@@ -28,6 +28,7 @@ function plotGraph(data, width, height) {
             .enter()
             .append("line")
             .attr("stroke", "black")
+            .attr("stroke-width", function(d){ return d.force*10});
 
         var node = svg.append("g")
             .attr("class", "nodes")
@@ -50,16 +51,16 @@ function plotGraph(data, width, height) {
                 .attr("y2", function(d) { return d.target.y; });
 
             node
-                .attr("cx", function(d) { return d.x; })
-                .attr("cy", function(d) { return d.y; });
+                .attr("cx", function(d) { return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
+                .attr("cy", function(d) { return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); });
         }
 
         simulation
             .nodes(data.nodes)
             .on("tick", ticked);
 
-        simulation.force("link")
-            .links(data.links);
+        sim = simulation.force("link")
+                        .links(data.links);
 
 
 
@@ -80,4 +81,21 @@ function plotGraph(data, width, height) {
             d.fy = null;
         }
 
+        return {sim: simulation, links: link}
+
     }
+
+function updateGraph(viz, data){
+
+  viz.sim.force("link")
+         .links(data.links);
+
+  viz.sim.nodes(data.nodes);
+
+  viz.links.attr("stroke-width", function(d){ return d.force*10})
+           .attr("stroke", function(d){ if(d.force>=0){ return "black"} else {return "red"}});
+
+  viz.sim = viz.sim.alpha(1).restart();
+
+  return viz
+}
