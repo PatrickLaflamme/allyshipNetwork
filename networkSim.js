@@ -1,5 +1,7 @@
-function genRandomGraph(num_nodes, num_links, groupProbs){
-  nodes = d3.range(num_nodes).map(function(d){ return {r: 10, sex: ~~d3.randomUniform(2)(), group: assignGroup(groupProbs)}});
+function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs){
+  nodes = d3.range(num_nodes).map(function(d){ return {r: 5,
+                                                       sex: assignGroup(genderProbs).sex,
+                                                       group: assignGroup(groupProbs)}});
   links = getRandomSubarray(allPairs(nodes), num_links);
 
   arr = []
@@ -52,6 +54,10 @@ function getRandomSubarray(arr, size) {
 }
 
 function assignGroup(groupProbs){
+
+  console.assert(d3.sum(groupProbs, function(d){ d.prob}) == 1.0, "Warning: the group probabilities do not sum to 1");
+
+
   n = Math.random();
   keys = Object.keys(groupProbs);
   total_prob = 0;
@@ -64,6 +70,42 @@ function assignGroup(groupProbs){
   }
 }
 
+function get_force_change(statementProbs){
+  n = Math.random();
+  total_prob = 0;
+
+  for(i=0;i < statementProbs.length; i++){
+    total_prob += statementProbs[i];
+    if(n <= total_prob){
+      return i;
+    }
+  }
+}
+
 function simStep(data){
-  data.nodes
+
+  var force_changes = [-0.005,0,0.0001];
+
+  var nodes = data.nodes;
+
+  data.links = data.links.map(function(d){
+
+    force_change = force_changes[get_force_change(d.target.group.prob)];
+    force_change += force_changes[get_force_change(d.source.group.prob)];
+
+    if(d.target.sex == d.source.sex){
+      force_change = 0
+    }
+
+    d.force += force_change;
+
+    if(Math.abs(d.force) > 0.15){
+      d.force = Math.sign(d.force)*0.15
+    }
+
+    return d;
+  });
+
+  return data;
+
 }

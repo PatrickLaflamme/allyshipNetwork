@@ -1,8 +1,6 @@
 
 function plotGraph(data, width, height) {
 
-        var colors = d3.scaleOrdinal(d3.schemeCategory10);
-
         var svg = d3.select("body").append("svg");
 
         svg.attr("width", width)
@@ -18,8 +16,8 @@ function plotGraph(data, width, height) {
             .force("link",linkForce)
             .force("charge", d3.forceManyBody().strength(-100))
             .force("center", d3.forceCenter(width / 2, height / 2))
-          //  .force("y", d3.forceY(0))
-          //  .force("x", d3.forceX(0))
+            .force("y", d3.forceY(0))
+            .force("x", d3.forceX(0))
 
         var link = svg.append("g")
             .attr("class", "links")
@@ -28,31 +26,75 @@ function plotGraph(data, width, height) {
             .enter()
             .append("line")
             .attr("stroke", "black")
-            .attr("stroke-width", function(d){ return d.force*10});
+            .attr("stroke-width", function(d){ return Math.abs(d.force*12)});
+
+        var triangle = d3.symbol()
+                       .type(d3.symbolTriangle)();
+        var square = d3.symbol()
+                       .type(d3.symbolSquare)();
+        var circle = d3.symbol()
+                       .type(d3.symbolCircle)();
+
+        var symbolScale = d3.scaleOrdinal()
+                            .domain(["Ally", "Neutral", "Sexist"])
+                            .range([square, circle, triangle]);
+
+        var colorScale = d3.scaleOrdinal(d3.schemeCategory10)
+                           .domain(["Male", "Female"]);
 
         var node = svg.append("g")
-            .attr("class", "nodes")
-            .selectAll("circle")
+            .attr("class", "links")
+            .selectAll("path")
             .data(data.nodes)
-            .enter().append("circle")
-            .attr("r", function(d){  return d.r })
-            .style("fill", function(d){ return colors(d.sex)})
+            .enter().append("path")
+            .attr("d", function(d){ console.log(d.group.name); return symbolScale(d.group.name);})
+            .style("fill", function(d){ return colorScale(d.sex)})
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        svg.append("g")
+          .attr("class", "legendSymbol")
+          .attr("transform", "translate(20, 20)");
+
+        var legendPath = d3.legendSymbol()
+          .scale(symbolScale)
+          .orient("vertical")
+          .labelWrap(30)
+          .title("Sexism level")
+          .on("cellclick", function(d){alert("clicked " + d);});
+
+        svg.select(".legendSymbol")
+          .call(legendPath);
+
+        svg.append("g")
+          .attr("class", "legendColor")
+          .attr("transform", "translate(20,120)");
+
+        var legendColor = d3.legendColor()
+          .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
+          .shapePadding(10)
+          .title("Sex")
+          .scale(colorScale);
+
+        svg.select(".legendColor")
+          .call(legendColor);
+
 
         var ticked = function() {
             link
-                .attr("x1", function(d) { return d.source.x; })
-                .attr("y1", function(d) { return d.source.y; })
-                .attr("x2", function(d) { return d.target.x; })
-                .attr("y2", function(d) { return d.target.y; });
+                .attr("x1", function(d) { return d.source.x = Math.max(d.source.r, Math.min(width - d.source.r, d.source.x)); })
+                .attr("y1", function(d) { return d.source.y = Math.max(d.source.r, Math.min(width - d.source.r, d.source.y)); })
+                .attr("x2", function(d) { return d.target.x = Math.max(d.target.r, Math.min(width - d.target.r, d.target.x)); })
+                .attr("y2", function(d) { return d.target.y = Math.max(d.target.r, Math.min(width - d.target.r, d.target.y)); });
 
             node
-                .attr("cx", function(d) { return d.x = Math.max(d.r, Math.min(width - d.r, d.x)); })
-                .attr("cy", function(d) { return d.y = Math.max(d.r, Math.min(height - d.r, d.y)); });
+                .attr("transform", function(d) {
+                                      d.x = Math.max(d.r, Math.min(width - d.r, d.x));
+                                      d.y = Math.max(d.r, Math.min(height - d.r, d.y));
+                                      return "translate(" + d.x + "," + d.y + ")";
+                                   })
         }
 
         simulation
@@ -92,10 +134,10 @@ function updateGraph(viz, data){
 
   viz.sim.nodes(data.nodes);
 
-  viz.links.attr("stroke-width", function(d){ return d.force*10})
+  viz.links.attr("stroke-width", function(d){ return Math.abs(d.force*12)})
            .attr("stroke", function(d){ if(d.force>=0){ return "black"} else {return "red"}});
 
-  viz.sim = viz.sim.alpha(1).restart();
+  viz.sim = viz.sim.alpha(0.1).restart();
 
   return viz
 }
