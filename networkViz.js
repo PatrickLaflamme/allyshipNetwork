@@ -8,13 +8,14 @@ function plotGraph(data, width, height) {
 
 
         linkForce =  d3.forceLink()
-                       .strength(function(d){return d.force})
+                       .distance(function(d){return 10^-(1000*d.force) + 200})
+                       .iterations(10)
                        .id(function(d){ return d.index })
 
 
         var simulation = d3.forceSimulation()
-            .force("link",linkForce)
-            .force("charge", d3.forceManyBody().strength(-100))
+            .force("link", linkForce)
+            .force("charge", d3.forceManyBody().strength(-800))
             .force("center", d3.forceCenter(width / 2, height / 2))
             .force("y", d3.forceY(0))
             .force("x", d3.forceX(0))
@@ -26,37 +27,44 @@ function plotGraph(data, width, height) {
             .enter()
             .append("line")
             .attr("stroke", "black")
-            .attr("stroke-width", function(d){ return Math.abs(d.force*12)});
+            .attr("stroke-width", function(d){ return Math.abs(d.force*12)})
+            .attr("opacity",0.6);
 
         var triangle = d3.symbol()
+                       .size(function(d){return 100})
                        .type(d3.symbolTriangle)();
         var square = d3.symbol()
+                       .size(function(d){return 100})
                        .type(d3.symbolSquare)();
         var circle = d3.symbol()
+                       .size(function(d){return 100})
                        .type(d3.symbolCircle)();
 
         var symbolScale = d3.scaleOrdinal()
                             .domain(["Ally", "Neutral", "Sexist"])
-                            .range([square, circle, triangle]);
+                            .range([circle, square, triangle]);
 
         var colorScale = d3.scaleOrdinal(d3.schemeCategory10)
-                           .domain(["Male", "Female"]);
+                           .domain(["Man", "Woman"]);
 
         var node = svg.append("g")
-            .attr("class", "links")
+            .attr("class", "nodes")
             .selectAll("path")
-            .data(data.nodes)
+            .data(data.nodes.sort(function(x,y){ return d3.ascending(x.gender, y.gender)}))
             .enter().append("path")
-            .attr("d", function(d){ console.log(d.group.name); return symbolScale(d.group.name);})
-            .style("fill", function(d){ return colorScale(d.sex)})
+            .attr("d", function(d){ return symbolScale(d.group.name);})
+            .style("fill", function(d){ return colorScale(d.gender)})
+            .style("stroke", "black")
             .call(d3.drag()
                 .on("start", dragstarted)
                 .on("drag", dragged)
                 .on("end", dragended));
 
+        /*
         svg.append("g")
           .attr("class", "legendSymbol")
           .attr("transform", "translate(20, 20)");
+
 
         var legendPath = d3.legendSymbol()
           .scale(symbolScale)
@@ -75,12 +83,12 @@ function plotGraph(data, width, height) {
         var legendColor = d3.legendColor()
           .shape("path", d3.symbol().type(d3.symbolSquare).size(150)())
           .shapePadding(10)
-          .title("Sex")
+          .title("Gender")
           .scale(colorScale);
 
         svg.select(".legendColor")
           .call(legendColor);
-
+*/
 
         var ticked = function() {
             link

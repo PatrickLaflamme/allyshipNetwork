@@ -1,52 +1,56 @@
 
 
-var num_nodes = 20;
-var num_links = 50;
-var num_iters = 40;
-var pause_time = 500;
+var num_nodes = 8;
+var num_links = 200;
+var num_iters = 10;
+var pause_time = 10;
 var groups = {
   sexist: {
-    prob:0.25,
+    prob:0.2,
     info:{
       name: "Sexist",
       prob: [1,0,0]
     }},
   neutral: {
-    prob:0.75,
+    prob:0.6,
     info:{
       name: "Neutral",
       prob: [0,1,0]
     }},
   ally: {
-    prob:0,
+    prob:0.2,
     info:{
       name: "Ally",
       prob: [0,0,1]
     }},
 }
-var sex = {
-  male: {
+var gender = {
+  Man: {
     prob: 0.8,
     info: {
-      sex: "Male"
+      gender: "Man"
     }
   },
-  female: {
+  Woman: {
     prob: 0.2,
     info: {
-      sex: "Female"
+      gender: "Woman"
     }
   }
 }
 
-data = genRandomGraph(num_nodes,num_links, groups, sex);
+data = genRandomGraph(num_nodes,num_links, groups, gender, fullyConnected);
 
-viz = plotGraph(data, 500, 500);
+viz = plotGraph(data, window.innerWidth, window.innerHeight - 20);
+viz = updateGraph(viz, data);
+
+setTimeout(function(){initial_stats = getSummaryStats(data);},1000);
 
 interval = d3.interval(function (elapsed) {
   data = simStep(data);
   viz = updateGraph(viz, data);
   if(elapsed >= num_iters*pause_time){
+    final_stats = getSummaryStats(data);
     interval.stop();
   }
-}, pause_time);
+}, pause_time, 4000);
