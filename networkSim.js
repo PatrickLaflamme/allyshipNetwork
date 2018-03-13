@@ -1,8 +1,20 @@
-var rng = Math.random; //new Math.seedrandom('1-2039481234-0');
+/*
+  Function devoted to generating the nodes and links required for the simulation to run.
+  Parameters:
+    -
+    -
+    -
+    -
+    -
 
+  Returns:
+    - Object with two values:
+      - nodes - the list of nodes in the network
+      - links - the list of links that connect nodes
 
+*/
 function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs, linkGenerator){
-  nodes = d3.range(num_nodes).map(function(d,i){ return {r: 100,
+  nodes = d3.range(num_nodes).map(function(d,i){ return {r: 200,
                                                        gender: assignGroup(genderProbs).gender,
                                                        group: assignGroup(groupProbs),
                                                        index: i}});
@@ -12,12 +24,19 @@ function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs, linkGener
 }
 
 
+/*
+  This function is devoted to simulating one "timestep" within the organization. It modifies the valence of the individuals based on the types of people they are surrounded by:
+    - Sexist people of the opposite gender reduce valence
+    - Neutral people of either gender increase value margninally
+    - Allies increase values considerably.
+
+  In addition, we modify the effect of a connection based on a person's position in the network. That is, we multiply the overall change in a person's valence by the proportion of connections that are of the other gender and are not allies.
+*/
 function simStep(data){
 
-  var force_changes = [-5,0.5,5];
+  var force_changes = [-10,0.5,10];
 
-  var nodes = data.nodes;
-
+  // Go through and calculate the new valence of each person in the network
   data.nodes = data.nodes.map(function(d){
 
     relLinks = data.links.filter(function(link){return d == link.target || d == link.source});
@@ -75,6 +94,7 @@ function get_force_change(statementProbs){
   }
 }
 
+// Generic function to return an index given an array of probabilities that sum to 1.
 function assignGroup(groupProbs){
 
   n = rng();
@@ -89,6 +109,9 @@ function assignGroup(groupProbs){
   }
 }
 
+/*
+  Function devoted to calculating meaningful summary statistics for the network after the simulation has run its course. This is used to test the network from an analytical perspective.
+*/
 function getSummaryStats(data){
   WomenLinks = []
   WomenNodes = []

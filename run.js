@@ -1,4 +1,4 @@
-
+var rng = new Math.seedrandom('12341324');
 
 var num_nodes = 30;
 var num_links = 200;
@@ -12,13 +12,13 @@ var groups = {
       prob: [1,0,0]
     }},
   neutral: {
-    prob:0.8,
+    prob:0.6,
     info:{
       name: "Neutral",
       prob: [0,1,0]
     }},
   ally: {
-    prob:0.0,
+    prob:0.2,
     info:{
       name: "Ally",
       prob: [0,0,1]
@@ -54,4 +54,4 @@ interval = d3.interval(function (elapsed) {
     final_stats = getSummaryStats(data);
     interval.stop();
   }
-}, pause_time, 1000);
+}, pause_time, 10000);
