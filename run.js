@@ -1,9 +1,9 @@
 
 
-var num_nodes = 8;
+var num_nodes = 30;
 var num_links = 200;
 var num_iters = 10;
-var pause_time = 10;
+var pause_time = 100;
 var groups = {
   sexist: {
     prob:0.2,
@@ -12,13 +12,13 @@ var groups = {
       prob: [1,0,0]
     }},
   neutral: {
-    prob:0.6,
+    prob:0.8,
     info:{
       name: "Neutral",
       prob: [0,1,0]
     }},
   ally: {
-    prob:0.2,
+    prob:0.0,
     info:{
       name: "Ally",
       prob: [0,0,1]
@@ -39,12 +39,13 @@ var gender = {
   }
 }
 
-data = genRandomGraph(num_nodes,num_links, groups, gender, fullyConnected);
+data = genRandomGraph(num_nodes,num_links, groups, gender, hierarchicalTeams);
 
 viz = plotGraph(data, window.innerWidth, window.innerHeight - 20);
 viz = updateGraph(viz, data);
+data = simStep(data);
 
-setTimeout(function(){initial_stats = getSummaryStats(data);},1000);
+//setTimeout(function(){initial_stats = getSummaryStats(data);},1000);
 
 interval = d3.interval(function (elapsed) {
   data = simStep(data);
@@ -53,4 +54,4 @@ interval = d3.interval(function (elapsed) {
     final_stats = getSummaryStats(data);
     interval.stop();
   }
-}, pause_time, 4000);
+}, pause_time, 1000);

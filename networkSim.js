@@ -2,30 +2,65 @@ var rng = Math.random; //new Math.seedrandom('1-2039481234-0');
 
 
 function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs, linkGenerator){
-  nodes = d3.range(num_nodes).map(function(d){ return {r: 5,
+  nodes = d3.range(num_nodes).map(function(d,i){ return {r: 100,
                                                        gender: assignGroup(genderProbs).gender,
-                                                       group: assignGroup(groupProbs)}});
+                                                       group: assignGroup(groupProbs),
+                                                       index: i}});
   links = linkGenerator(nodes)
 
-  function assignGroup(groupProbs){
-
-    console.assert(d3.sum(groupProbs, function(d){ d.prob}) == 1.0, "Warning: the group probabilities do not sum to 1");
-
-
-    n = rng();
-    keys = Object.keys(groupProbs);
-    total_prob = 0;
-
-    for(i=0;i < keys.length; i++){
-      total_prob += groupProbs[keys[i]].prob;
-      if(n <= total_prob){
-        return groupProbs[keys[i]].info;
-      }
-    }
-  }
-
-
   return {nodes: nodes, links: links}
+}
+
+
+function simStep(data){
+
+  var force_changes = [-5,0.5,5];
+
+  var nodes = data.nodes;
+
+  data.nodes = data.nodes.map(function(d){
+
+    relLinks = data.links.filter(function(link){return d == link.target || d == link.source});
+
+
+    nOtherGenderNotAlly = d3.sum(relLinks, function(link){
+      if(d == link.target && d.gender != link.source.gender && link.source.group.name != "Ally"){
+        return 1;
+      }
+      if(d == link.source && d.gender != link.target.gender && link.target.group.name != "Ally"){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    })
+
+    change_multiplier = nOtherGenderNotAlly/relLinks.length;
+
+    relLinks.forEach(function(links){
+      if(d == links.target){
+        node = links.source
+      }
+      else{
+        node = links.target
+      }
+      if(node.gender != d.gender){
+        change = force_changes[get_force_change(node.group.prob)];
+      }
+      else{
+        change = force_changes[1];
+        change_multiplier = 1;
+      }
+      d.r += change*change_multiplier;
+    })
+
+    d.r = Math.max(30,d.r)
+
+    return d;
+  })
+
+  return data;
+
 }
 
 function get_force_change(statementProbs){
@@ -40,50 +75,18 @@ function get_force_change(statementProbs){
   }
 }
 
-function simStep(data){
+function assignGroup(groupProbs){
 
-  var force_changes = [-0.05,0,0.05];
+  n = rng();
+  keys = Object.keys(groupProbs);
+  total_prob = 0;
 
-  var nodes = data.nodes;
-
-  data.links = data.links.map(function(d){
-
-    force_change = force_changes[get_force_change(d.target.group.prob)];
-    force_change += force_changes[get_force_change(d.source.group.prob)];
-
-    targetLinks = data.links.filter(function(d2){
-      if(d2.target == d.target || d2.target == d.source || d2.source == d.target || d2.source == d.source){
-        return true
-      }
-      else{
-        return false
-      }
-    })
-
-    sourceLinks = data.links.filter(function(d2){
-      if(d2.target == d.target || d2.target == d.source || d2.source == d.target || d2.source == d.source){
-        return true
-      }
-      else{
-        return false
-      }
-    })
-
-    if(d.target.gender == d.source.gender){
-      force_change = 0
+  for(i=0;i < keys.length; i++){
+    total_prob += groupProbs[keys[i]].prob;
+    if(n <= total_prob){
+      return groupProbs[keys[i]].info;
     }
-
-    d.force += force_change;
-
-    /*if(Math.abs(d.force) > 0.15){
-      d.force = Math.sign(d.force)*0.15
-    }*/
-
-    return d;
-  });
-
-  return data;
-
+  }
 }
 
 function getSummaryStats(data){

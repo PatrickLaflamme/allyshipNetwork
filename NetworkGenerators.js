@@ -60,6 +60,46 @@ function DorogovtsevMendesGenerator(nodes){
   return links
 }
 
+function hierarchicalTeams(nodes){
+
+  clusterSizes = [4,5,6,7,8]
+
+  nodeList = [...nodes]
+
+  clusters = Array()
+
+  // Split our list of nodes into clusters
+  while(nodeList.length > 0){
+    clusterSize = clusterSizes[Math.floor(rng()*clusterSizes.length)]
+    nodesInCluster = nodeList.splice(0,clusterSize - 1)
+    fcCluster = fullyConnected(nodesInCluster)
+    clusters.push({links:fcCluster, nodes: nodesInCluster})
+  }
+
+  managers = []
+
+  // create a fully connected network within clusters, and connect one node from each cluster (the manager) to all other managers from the other clusters.
+  for(i=0;i<clusters.length;i++){
+    cluster = clusters[i].links
+    nodes = [...clusters[i].nodes]
+
+    if(i == 0){
+      pairArray = cluster
+    }
+    else{
+      pairArray = pairArray.concat(cluster);
+    }
+
+    managers.push(nodes[0])
+  }
+
+  managerConnections = fullyConnected(managers)
+
+  pairArray = pairArray.concat(managerConnections)
+
+  return pairArray
+}
+
 function fullyConnected(nodes) {
   return allPairs(nodes)
 }
@@ -67,14 +107,14 @@ function fullyConnected(nodes) {
 
 // HELPER FUNCTIONS
 
-function allPairs (nodes){ // generate every unique pair of nodes.
-  pairArray = [];
-  for(i=0; i < nodes.length; i++){
-    for(j=i; j < nodes.length; j++){
-      pairArray.push({source: i, target: j, force: 0.1});
+function allPairs (nodeList){ // generate every unique pair of nodes.
+  pairs = [];
+  for(i=0; i < nodeList.length; i++){
+    for(j=i+1; j < nodeList.length; j++){
+      pairs.push({source: nodeList[i], target: nodeList[j], force: 100});
     };
   };
-  return pairArray;
+  return pairs;
 }
 
 function getRandomSubarray(arr, size, remainder) { // get a random subset of the array of length size.

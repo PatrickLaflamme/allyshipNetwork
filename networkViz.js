@@ -8,17 +8,14 @@ function plotGraph(data, width, height) {
 
 
         linkForce =  d3.forceLink()
-                       .distance(function(d){return 10^-(1000*d.force) + 200})
+                       .distance(function(d){return 100})
                        .iterations(10)
                        .id(function(d){ return d.index })
 
-
         var simulation = d3.forceSimulation()
             .force("link", linkForce)
-            .force("charge", d3.forceManyBody().strength(-800))
+            .force("charge", d3.forceManyBody().strength(-100))
             .force("center", d3.forceCenter(width / 2, height / 2))
-            .force("y", d3.forceY(0))
-            .force("x", d3.forceX(0))
 
         var link = svg.append("g")
             .attr("class", "links")
@@ -27,22 +24,26 @@ function plotGraph(data, width, height) {
             .enter()
             .append("line")
             .attr("stroke", "black")
-            .attr("stroke-width", function(d){ return Math.abs(d.force*12)})
+            .attr("stroke-width", function(d){ return Math.abs(d.force/100)})
             .attr("opacity",0.6);
 
         var triangle = d3.symbol()
-                       .size(function(d){return 100})
-                       .type(d3.symbolTriangle)();
+                       .size(function(d){return Math.max(10, d.r)})
+                       .type(d3.symbolTriangle);
         var square = d3.symbol()
-                       .size(function(d){return 100})
-                       .type(d3.symbolSquare)();
+                       .size(function(d){return Math.max(10, d.r)})
+                       .type(d3.symbolSquare);
         var circle = d3.symbol()
-                       .size(function(d){return 100})
-                       .type(d3.symbolCircle)();
+                       .size(function(d){return Math.max(10, d.r)})
+                       .type(d3.symbolCircle);
 
         var symbolScale = d3.scaleOrdinal()
                             .domain(["Ally", "Neutral", "Sexist"])
                             .range([circle, square, triangle]);
+
+        var symbolScaleLegend = d3.scaleOrdinal()
+                            .domain(["Ally", "Neutral", "Sexist"])
+                            .range([circle({r:100}), square({r:100}), triangle({r:100})]);
 
         var colorScale = d3.scaleOrdinal(d3.schemeCategory10)
                            .domain(["Man", "Woman"]);
@@ -52,22 +53,19 @@ function plotGraph(data, width, height) {
             .selectAll("path")
             .data(data.nodes.sort(function(x,y){ return d3.ascending(x.gender, y.gender)}))
             .enter().append("path")
-            .attr("d", function(d){ return symbolScale(d.group.name);})
+            .attr("id", function(d){ return d.index})
+            .attr("d", function(d){ return symbolScale(d.group.name)(d);})
             .style("fill", function(d){ return colorScale(d.gender)})
             .style("stroke", "black")
-            .call(d3.drag()
-                .on("start", dragstarted)
-                .on("drag", dragged)
-                .on("end", dragended));
 
-        /*
+
         svg.append("g")
           .attr("class", "legendSymbol")
           .attr("transform", "translate(20, 20)");
 
 
         var legendPath = d3.legendSymbol()
-          .scale(symbolScale)
+          .scale(symbolScaleLegend)
           .orient("vertical")
           .labelWrap(30)
           .title("Sexism level")
@@ -88,7 +86,7 @@ function plotGraph(data, width, height) {
 
         svg.select(".legendColor")
           .call(legendColor);
-*/
+
 
         var ticked = function() {
             link
@@ -131,7 +129,7 @@ function plotGraph(data, width, height) {
             d.fy = null;
         }
 
-        return {sim: simulation, links: link}
+        return {sim: simulation, links: link, nodes: node, symbolScale: symbolScale}
 
     }
 
@@ -142,10 +140,12 @@ function updateGraph(viz, data){
 
   viz.sim.nodes(data.nodes);
 
-  viz.links.attr("stroke-width", function(d){ return Math.abs(d.force*12)})
-           .attr("stroke", function(d){ if(d.force>=0){ return "black"} else {return "red"}});
+  //viz.links.attr("stroke-width", function(d){ return Math.abs(d.force/90)})
+  //         .attr("stroke", function(d){ if(d.force>=0){ return "black"} else {return "red"}});
 
-  viz.sim = viz.sim.alpha(0.1).restart();
+  viz.nodes.attr("d", function(d){ return viz.symbolScale(d.group.name)(d);})
+
+  viz.sim = viz.sim.alpha(1).restart();
 
   return viz
 }
