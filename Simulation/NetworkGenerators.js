@@ -90,28 +90,40 @@ function hierarchicalTeams(nodes){
       pairArray = pairArray.concat(cluster);
     }
 
-    managers.push(nodes[0])
+    if( managers.length <= 6){
+      managers.push(nodes[0])
+    }
+    else {
+      randNode = nodes[Math.floor(rng()*nodes.length)]
+      randOtherCluster = clusters[Math.floor(rng()*i)].nodes
+      randOther = randOtherCluster[Math.floor(rng()*randOtherCluster.length)]
+      randLink = {source: randNode, target: randOther, force: 100}
+
+      pairArray.push(randLink)
+    }
   }
 
-  managerConnections = fullyConnected(managers)
+  managerConnections = fullyConnected(managers, 100)
 
   pairArray = pairArray.concat(managerConnections)
 
   return pairArray
 }
 
-function fullyConnected(nodes) {
-  return allPairs(nodes)
+function fullyConnected(nodes, force) {
+  force = force ? force : 100;
+  return allPairs(nodes, force)
 }
 
 
 // HELPER FUNCTIONS
 
-function allPairs (nodeList){ // generate every unique pair of nodes.
+function allPairs (nodeList, force){ // generate every unique pair of nodes.
   pairs = [];
+  force = force ? force : 100;
   for(i=0; i < nodeList.length; i++){
     for(j=i+1; j < nodeList.length; j++){
-      pairs.push({source: nodeList[i], target: nodeList[j], force: 100});
+      pairs.push({source: nodeList[i], target: nodeList[j], force: force});
     };
   };
   return pairs;

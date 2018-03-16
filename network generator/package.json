@@ -1,0 +1,10 @@
+{
+  "name": "",
+  "version": "",
+  "dependencies": {
+    "async": "^2.6.0",
+    "npm": "^5.7.1",
+    "randomstring": "^1.1.5",
+    "zombie": "^5.0.8"
+  }
+}

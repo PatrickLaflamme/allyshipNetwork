@@ -114,35 +114,31 @@ function assignGroup(groupProbs){
 */
 function getSummaryStats(data){
   WomenLinks = []
-  WomenNodes = []
+  WomenNodes = data.nodes.filter(function(d){ return d.gender == 'Woman'})
   MenLinks = []
-  MenNodes = []
+  MenNodes = data.nodes.filter(function(d){ return d.gender == 'Man'})
 
   data.links.forEach(function(d){
     if(d.source.gender == "Woman"){
       WomenLinks.push(d.force);
-      WomenNodes.push({x: d.source.x, y: d.source.y});
     }
     else{
       MenLinks.push(d.force);
-      MenNodes.push({x: d.source.x, y: d.source.y});
     }
 
     if(d.target.gender == 'Woman'){
       WomenLinks.push(d.force);
-      WomenNodes.push({x: d.target.x, y: d.target.y});
     }
     else{
       MenLinks.push(d.force);
-      MenNodes.push({x: d.target.x, y: d.target.y});
     }
   });
 
   return {
     meanWomenForce: d3.mean(WomenLinks),
     meanMenForce: d3.mean(MenLinks),
-    meanWomenDist: d3.mean(WomenNodes, function(d){return Math.sqrt(Math.pow(d.x - window.innerWidth/2,2) + Math.pow(d.y - (window.innerHeight - 20)/2,2))}),
-    meanMenDist: d3.mean(MenNodes, function(d){return Math.sqrt(Math.pow(d.x - window.innerWidth/2,2) + Math.pow(d.y - (window.innerHeight - 20)/2,2))}),
+    meanWomenRad: d3.mean(WomenNodes, function(d){return d.r}),
+    meanMenRad: d3.mean(MenNodes, function(d){return d.r}),
   }
 
 

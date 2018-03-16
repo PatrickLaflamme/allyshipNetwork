@@ -4,17 +4,18 @@ function plotGraph(data, width, height) {
         var svg = d3.select("body").append("svg");
 
         svg.attr("width", width)
-          .attr("height", height);
+          .attr("height", height)
+          .attr("id", "AllyshipSim");
 
 
         linkForce =  d3.forceLink()
-                       .distance(function(d){return 100})
+                       .distance(function(d){return d.force})
                        .iterations(10)
                        .id(function(d){ return d.index })
 
         var simulation = d3.forceSimulation()
             .force("link", linkForce)
-            .force("charge", d3.forceManyBody().strength(-100))
+            .force("charge", d3.forceManyBody().strength(-200))
             .force("center", d3.forceCenter(width / 2, height / 2))
 
         var link = svg.append("g")
@@ -24,7 +25,7 @@ function plotGraph(data, width, height) {
             .enter()
             .append("line")
             .attr("stroke", "black")
-            .attr("stroke-width", function(d){ return Math.abs(d.force/100)})
+            .attr("stroke-width", function(d){ return 1})
             .attr("opacity",0.6);
 
         var triangle = d3.symbol()
@@ -57,6 +58,10 @@ function plotGraph(data, width, height) {
             .attr("d", function(d){ return symbolScale(d.group.name)(d);})
             .style("fill", function(d){ return colorScale(d.gender)})
             .style("stroke", "black")
+            .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on('drag', dragged)
+                    .on('end', dragended))
 
 
         svg.append("g")
@@ -90,15 +95,15 @@ function plotGraph(data, width, height) {
 
         var ticked = function() {
             link
-                .attr("x1", function(d) { return d.source.x = Math.max(d.source.r, Math.min(width - d.source.r, d.source.x)); })
-                .attr("y1", function(d) { return d.source.y = Math.max(d.source.r, Math.min(width - d.source.r, d.source.y)); })
-                .attr("x2", function(d) { return d.target.x = Math.max(d.target.r, Math.min(width - d.target.r, d.target.x)); })
-                .attr("y2", function(d) { return d.target.y = Math.max(d.target.r, Math.min(width - d.target.r, d.target.y)); });
+                .attr("x1", function(d) { return d.source.x = Math.max(50, Math.min(width - 50, d.source.x)); })
+                .attr("y1", function(d) { return d.source.y = Math.max(50, Math.min(height - 50, d.source.y)); })
+                .attr("x2", function(d) { return d.target.x = Math.max(50, Math.min(width - 50, d.target.x)); })
+                .attr("y2", function(d) { return d.target.y = Math.max(50, Math.min(height - 50, d.target.y)); });
 
             node
                 .attr("transform", function(d) {
-                                      d.x = Math.max(d.r, Math.min(width - d.r, d.x));
-                                      d.y = Math.max(d.r, Math.min(height - d.r, d.y));
+                                      d.x = Math.max(50, Math.min(width - 50, d.x));
+                                      d.y = Math.max(50, Math.min(height - 50, d.y));
                                       return "translate(" + d.x + "," + d.y + ")";
                                    })
         }
@@ -135,17 +140,17 @@ function plotGraph(data, width, height) {
 
 function updateGraph(viz, data){
 
-  viz.sim.force("link")
+  /*viz.sim.force("link")
          .links(data.links);
 
-  viz.sim.nodes(data.nodes);
+  viz.sim = viz.sim.alpha(1).restart();
 
+  viz.sim.nodes(data.nodes);
+*/
   //viz.links.attr("stroke-width", function(d){ return Math.abs(d.force/90)})
   //         .attr("stroke", function(d){ if(d.force>=0){ return "black"} else {return "red"}});
 
   viz.nodes.attr("d", function(d){ return viz.symbolScale(d.group.name)(d);})
-
-  viz.sim = viz.sim.alpha(1).restart();
 
   return viz
 }
