@@ -1,3 +1,5 @@
+
+
 var query = window.location.search.substring(1);
 
 query = query ? query : "12341324";
@@ -6,7 +8,7 @@ var rng = new Math.seedrandom(query);
 
 var num_nodes = 60;
 var num_links = 200;
-var num_iters = 10;
+var num_iters = 40;
 var pause_time = 100;
 var groups = {
   sexist: {
@@ -45,17 +47,64 @@ var gender = {
 
 data = genRandomGraph(num_nodes,num_links, groups, gender, hierarchicalTeams);
 
-viz = plotGraph(data, window.innerWidth, window.innerHeight);
+viz = plotGraph(data, 1920, 1080);
 viz = updateGraph(viz, data);
 data = simStep(data);
-
-//setTimeout(function(){initial_stats = getSummaryStats(data);},1000);
+stats = [];
+iter = 0;
 
 interval = d3.interval(function (elapsed) {
   data = simStep(data);
   viz = updateGraph(viz, data);
-  if(elapsed >= num_iters*pause_time){
-    final_stats = getSummaryStats(data);
+  stats.push(getSummaryStats(data, iter));
+  if(iter >= num_iters){
+    csvFile = ConvertToCSV(JSON.stringify(stats));
+    d3.select("body")
+      .append("button")
+      .attr("onclick", "download('AllyshipSim-' + query + '.csv', csvFile)")
     interval.stop();
   }
-}, pause_time, 10000);
+  iter++
+}, pause_time, 1100);
+
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+    var line = '';
+
+    var header = Object.getOwnPropertyNames(array[0]);
+
+    for(var i=0; i < header.length;i++){
+      if (line != '') line += ','
+
+      line += header[i];
+    }
+
+    str += line + '\r\n';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+
+            line += array[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}

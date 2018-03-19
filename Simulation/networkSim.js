@@ -34,7 +34,7 @@ function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs, linkGener
 */
 function simStep(data){
 
-  var force_changes = [-10,0.5,10];
+  var force_changes = [-5,0.5,5];
 
   // Go through and calculate the new valence of each person in the network
   data.nodes = data.nodes.map(function(d){
@@ -112,33 +112,72 @@ function assignGroup(groupProbs){
 /*
   Function devoted to calculating meaningful summary statistics for the network after the simulation has run its course. This is used to test the network from an analytical perspective.
 */
-function getSummaryStats(data){
+function getSummaryStats(data, iter){
   WomenLinks = []
   WomenNodes = data.nodes.filter(function(d){ return d.gender == 'Woman'})
   MenLinks = []
   MenNodes = data.nodes.filter(function(d){ return d.gender == 'Man'})
 
   data.links.forEach(function(d){
+    ignore_woman = false;
+    ignore_man = false;
+
     if(d.source.gender == "Woman"){
-      WomenLinks.push(d.force);
+      WomenLinks.push(d);
+      ignore_woman = true;
     }
     else{
-      MenLinks.push(d.force);
+      MenLinks.push(d);
+      ignore_man = true;
     }
 
-    if(d.target.gender == 'Woman'){
-      WomenLinks.push(d.force);
+    if(d.target.gender == 'Woman' && !ignore_woman){
+      WomenLinks.push(d);
     }
-    else{
-      MenLinks.push(d.force);
+    else if(!ignore_man){
+      MenLinks.push(d);
     }
   });
 
   return {
-    meanWomenForce: d3.mean(WomenLinks),
-    meanMenForce: d3.mean(MenLinks),
-    meanWomenRad: d3.mean(WomenNodes, function(d){return d.r}),
-    meanMenRad: d3.mean(MenNodes, function(d){return d.r}),
+    timestep: iter,
+    meanOverallValence: d3.mean(data.nodes, function(d){return d.r}),
+    meanWomenValence: d3.mean(WomenNodes, function(d){return d.r}),
+    meanMenValence: d3.mean(MenNodes, function(d){return d.r}),
+    meanWomenSexistInteractions: d3.sum(WomenLinks, function(d){
+      if(d.source.gender == "Woman"){
+        other = d.target;
+        self = d.source;
+      }
+      else{
+        other = d.source;
+        self = d.target;
+      }
+
+      if(other.group.name  == "Sexist" && other.gender == "Man"){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    })/WomenLinks.length*iter,
+    meanMenSexistInteractions: d3.sum(MenLinks, function(d){
+      if(d.source.gender == "Man"){
+        other = d.target;
+        self = d.source;
+      }
+      else{
+        other = d.source;
+        self = d.target;
+      }
+
+      if(other.group.name  == "Sexist" && other.gender == "Woman"){
+        return 1;
+      }
+      else{
+        return 0;
+      }
+    })/MenLinks.length*iter,
   }
 
 
