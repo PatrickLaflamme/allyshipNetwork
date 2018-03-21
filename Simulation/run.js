@@ -8,7 +8,7 @@ var rng = new Math.seedrandom(query);
 
 var num_nodes = 60;
 var num_links = 200;
-var num_iters = 40;
+var num_iters = 100;
 var pause_time = 100;
 var groups = {
   sexist: {
@@ -47,7 +47,7 @@ var gender = {
 
 data = genRandomGraph(num_nodes,num_links, groups, gender, hierarchicalTeams);
 
-viz = plotGraph(data, 1920, 1080);
+viz = plotGraph(data, window.innerWidth, window.innerHeight);
 viz = updateGraph(viz, data);
 data = simStep(data);
 stats = [];
@@ -60,12 +60,14 @@ interval = d3.interval(function (elapsed) {
   if(iter >= num_iters){
     csvFile = ConvertToCSV(JSON.stringify(stats));
     d3.select("body")
-      .append("button")
+      .append("input")
+      .attr("type", "button")
+      .attr("value", "Download CSV Summary Statistics")
       .attr("onclick", "download('AllyshipSim-' + query + '.csv', csvFile)")
     interval.stop();
   }
   iter++
-}, pause_time, 1100);
+}, pause_time, 10000);
 
 function ConvertToCSV(objArray) {
     var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;

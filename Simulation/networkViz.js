@@ -68,8 +68,7 @@ function plotGraph(data, width, height) {
           .attr("class", "legendSymbol")
           .attr("transform", "translate(20, 20)");
 
-
-        /*var legendPath = d3.legendSymbol()
+        var legendPath = d3.legendSymbol()
           .scale(symbolScaleLegend)
           .orient("vertical")
           .labelWrap(30)
@@ -92,7 +91,6 @@ function plotGraph(data, width, height) {
         svg.select(".legendColor")
           .call(legendColor);
 
-*/
         var ticked = function() {
             link
                 .attr("x1", function(d) { return d.source.x = Math.max(50, Math.min(width - 50, d.source.x)); })

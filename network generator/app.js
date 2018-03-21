@@ -15,10 +15,11 @@ var nightmare = []
 var j = 0
 
 for(i=0;i<nImages;i++){
-  nightmare = new Nightmare({ show: false})
+  nightmare = new Nightmare({ show: false, height: 1080, width:1920})
 
   svg = nightmare
           .goto('http://localhost:8000/Simulation/?'+random[j])
+          .viewport(1920,1080)
           .wait(1000)
           .evaluate(() => document.querySelector("svg").outerHTML)
           .end()
