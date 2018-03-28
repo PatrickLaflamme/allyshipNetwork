@@ -2,10 +2,10 @@
 function plotGraph(data, width, height) {
 
         var svg = d3.select("body").append("svg");
-
         svg.attr("width", width)
           .attr("height", height)
-          .attr("id", "AllyshipSim");
+          .attr("id", "AllyshipSim")
+          .style("background-color",'white');
 
 
         linkForce =  d3.forceLink()
@@ -93,14 +93,14 @@ function plotGraph(data, width, height) {
 
         var ticked = function() {
             link
-                .attr("x1", function(d) { return d.source.x = Math.max(50, Math.min(width - 50, d.source.x)); })
+                .attr("x1", function(d) { return d.source.x = Math.max(115, Math.min(width - 50, d.source.x)); })
                 .attr("y1", function(d) { return d.source.y = Math.max(50, Math.min(height - 50, d.source.y)); })
-                .attr("x2", function(d) { return d.target.x = Math.max(50, Math.min(width - 50, d.target.x)); })
+                .attr("x2", function(d) { return d.target.x = Math.max(115, Math.min(width - 50, d.target.x)); })
                 .attr("y2", function(d) { return d.target.y = Math.max(50, Math.min(height - 50, d.target.y)); });
 
             node
                 .attr("transform", function(d) {
-                                      d.x = Math.max(50, Math.min(width - 50, d.x));
+                                      d.x = Math.max(115, Math.min(width - 50, d.x));
                                       d.y = Math.max(50, Math.min(height - 50, d.y));
                                       return "translate(" + d.x + "," + d.y + ")";
                                    })
