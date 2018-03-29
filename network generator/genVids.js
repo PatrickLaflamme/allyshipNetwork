@@ -1,38 +1,63 @@
-const Nightmare = require('nightmare')
-var randomstring = require("randomstring");
-const svg2png = require("svg2png");
-var fs = require("fs");
+const Nightmare = require('nightmare');
+require('nightmare-inline-download')(Nightmare);
 
-var nImages = process.argv[2];
+/*
+'osltFpbuDo6sEMJB',
+'RE0QRkb6hoEx87BB',
+*/
 
-random = []
+queries = [
+  'O81J2xbjrAIa6QkM',
+  '20Kd65GlUC2CIkip',
+  '8abzLhBpM1or48tl',
+  'g2ULKrZQZ2yFxz93',
+  'cLNo571Bs5IuP85B',
+  'uWOtG9YSXJtPmIfa',
+  'Ke6Piii6gplcn21b',
+  'jDayjkMzzSeBQxjt',
+  'DUrWkoKHmRHX1qJl',
+  'rYBVFj6Zs1F2EuVA'
+]
 
-for(i=0;i<nImages;i++){
-  random.push(randomstring.generate(16));
-}
+searchBuilds = []
+
+queries.forEach((q)=>{
+  searchBuilds.push(q+"&true");
+  searchBuilds.push(q+"&false");
+})
+
 
 var nightmare = []
 var j = 0
 
-for(i=0;i<nImages;i++){
-  nightmare = new Nightmare({ show: false, height: 1080, width:1920})
+for(i=0;i<searchBuilds.length;i++){
 
-  svg = nightmare
-          .goto('http://localhost:8000/Simulation/?'+random[j])
+  setTimeout(()=>{
+
+      nightmare = new Nightmare({ show: false, height: 1080, width:1920, paths:{downloads: "/Users/patricklaflamme/Dropbox/AllyshipNetwork/network\ generator/Videos/"}, waitTimeout: 100000});
+
+      nightmare
+          .goto('http://localhost:8000/Simulation/?'+ searchBuilds[j])
           .viewport(1920,1080)
+          .wait('a')
+          .click("a")
+          .download("continue")
+          .click("input")
+          .download("continue")
           .wait(1000)
-          .evaluate(() => document.querySelector("svg").outerHTML)
           .end()
-          .then(svg => {
-            svg2png(svg, {width: 1920, height: 1080})
-              .then(buffer => {
-                console.log(random[j])
-                fs.writeFile("Images/"+random[j]+".png", buffer, error => {if(error){console.log(error)}})
-                j++
-              })
-              .catch(e => console.log(e))
+          .then(() => {
+            console.log("Downloaded " + searchBuilds[j]);
+            j++
           })
           .catch(e => console.log(e))
+        }, i*60000);
 
 
 }
+
+/*waitForDownload(info){
+  while(true){
+    if(info.)
+  }
+}*/
