@@ -41,10 +41,14 @@ This section of the project is distinct from the other two in that it's much mor
 
 The simulation portion of this project also seemed to be divisible. First, we must generate an initial state for the network, and then we must iteratively update the state of the network based upon a defined set of rules. We will discuss how the simulation works, in that order.
 
-To generate an initial state of the network, the `genRandomGraph` function takes a number of parameters, defined in [networkSim.js](/networkSim.js), and creates a graph to be used in the simulation. Each node is assigned an initial valence score of 100, saved in the node object's `node.r` parameter.
+To generate an initial state of the network, the `genRandomGraph` function takes a number of parameters, defined in [networkSim.js](/networkSim.js), and creates a graph to be used in the simulation, in the form of an object with two values: 
 
-Simulating a time step is easy. Simply feed the output of `genRandomGraph` into the `simStep` function, along with a `valence_changes` array, that controls how the network will change based off of a sexist, neutral, or ally interaction, respectively.
+* `nodes`, which is an array of all the nodes in the graph. At the beginning of the simulation, each node is assigned an initial valence score of 100, saved in the node object's `node.r` parameter.
 
+* `links`, which is an array of all of the connections between nodes in the graph. All of these links are given a default 'force' of 100. However, this 'force' is not updated during the simulation.
 
+Simulating a time step is easy. Simply feed the output of `genRandomGraph` into the `simStep` function, along with a `valence_changes` array, that controls how the network will change based off of a sexist, neutral, or ally interaction, respectively. `value_changes` is an array of 3 numbers, which must add to 1, that is of the form: \["valence change due to a sexist comment", "valence change due to a neutral comment", "valence change due to an allied comment"\]. 
+
+After each time step, we also generate some summary statistics, defined in `getSummaryStats`. 
 
 ### Visualizing the network
