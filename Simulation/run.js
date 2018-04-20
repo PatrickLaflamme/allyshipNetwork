@@ -94,6 +94,7 @@ recorder.ondataavailable = function(event) {
    }
  };
 
+// When the video is done, create a link to the csv of the data, and the video itself.
 recorder.onstop = () => {
    var url = URL.createObjectURL(new Blob(data, { type: "video/webm" }));
    d3.selectAll("canvas, svg").remove();
@@ -117,12 +118,6 @@ recorder.onstop = () => {
      .attr("href", url)
      .attr("download", query + end + ".webm")
      .text("Click here to download the video")
-
-   /*d3.select("body")
-     .append("video")
-     .attr("id","finalVid")
-     .attr("src", url)
-     .attr("controls", true);*/
 };
 
 // Now define the behaviour necessary for the simulation to occur. The setTimeout function will repeat the function inside indefinitely until it's told to stop.
