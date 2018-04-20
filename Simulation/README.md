@@ -16,15 +16,29 @@ Once your SimpleHTTPServer is running, navigate to http://localhost:8000 to view
 
 This simulation project can broadly be broken down into 3 pieces, each of which is tackled by functions in a respective .js file:
 
-1. [Generating a randomized network](###Generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/networkGenerators.js).
+1. [Generating a randomized network](#Generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/networkGenerators.js).
 
-2. [Simulating changes in the network](###Simulationg-changes-in-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/networkSim.js). 
+2. [Simulating changes in the network](#Simulationg-changes-in-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/networkSim.js). 
 
-3. [Visualizing the network](###Visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/networkViz.js).
+3. [Visualizing the network](#Visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/networkViz.js).
 
 
 ### Generating a randomized network
 
-### Simulationg changes in the network
+There are a number of approaches to generating a random network that were explored during development. Each approach was created in a distinct function.
+
+* `myRandomGraph` defines a crude, initial network generator that simply subsamples the collection of all possible links between nodes. 
+
+* `DorogovtsevMendesGenerator` defines an implementation of the [Dorogovtsev Mendes](http://graphstream-project.org/doc/Generators/Dorogovtsev-Mendes-generator/) graph generating algorithm.
+
+* `FullyConnected` defines a simple approach of connected all nodes in the graph.
+
+* `HierarchicalTeams` generates a hierarchy of fully connected teams. This is the approach currently used in the simulation.
+
+This section of the project is distinct from the other two in that it's much more abstract. None of the functions within the [networkGenerators.js](/networkGenerators.js) file are directly related to the simulation, but are rather helper functions to define a network. Since the shape of the network presumably has a significant impact on the outcome, it was decided that this portion of the project should be kept separate and distinct from the rest.
+
+### Simulating the network
+
+
 
 ### Visualizing the network
