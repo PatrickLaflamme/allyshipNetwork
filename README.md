@@ -2,15 +2,6 @@
 
 This project was created for the Social Identity Lab. Broadly speaking, the project can be split into two categories, a *Simulation Code* portion, and a *Network Generation* portion. 
 
-### Simulation Code
-
-The simulation code contains the iternal logic driving the simulation, as well as the code necessary to visualize the simulation. Its intended purpose is to simulate the effect of sexism and allyship in simulated corporate environments. This simulation is gender agnostic, meaning that both genders are assumed to be equally likely to be sexist or allies. All simulation code can be found in the [Simulation folder](/Simulation).
-
-### Network Generation Code
-
-The Network generation code
-
-
 ## Dependencies
 
 This project is built almost entirely using javascript, and leverages the following resources
@@ -31,5 +22,18 @@ This project is built almost entirely using javascript, and leverages the follow
    python -m SimpleHTTPServer 8000
    ```
    
-5. (Node.js)[nodejs.org]
+5. [Node.js](nodejs.org)
    * used in the conversion of in-browser simulation to recorded webm videos.
+
+
+## Simulation Code
+
+The simulation code contains the iternal logic driving the simulation, as well as the code necessary to visualize the simulation. Its intended purpose is to simulate the effect of sexism and allyship in simulated corporate environments. This simulation is gender agnostic, meaning that both genders are assumed to be equally likely to be sexist or allies. All simulation code can be found in the [Simulation folder](/Simulation).
+
+### Running the simulation code
+
+## Network Generation Code
+
+The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run.
+
+### Running the network generation code.
