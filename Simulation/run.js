@@ -1,11 +1,14 @@
+// Check for the input parameters.
 requests = window.location.search.substring(1).split('&')
 
 var query = requests[0];
 var allies = requests[1];
 
-query = query ? query : "12341324";
+// if no specific query (rngSeed) was requested, randomly generate one.
+query = query ? query : Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 16);
 allies = allies == 'true';
 
+// if allies were set to "true", then we will add allies to the simulation, if not, then allies will be neutral instead.
 if(allies){
   groupDist = [0.2,0.6,0.2]
 } else{
@@ -14,11 +17,13 @@ if(allies){
 
 var rng = new Math.seedrandom(query);
 
-var num_nodes = 60;
-var num_links = 200;
-var num_iters = 100;
-var update_period = 10;
-var groups = {
+
+// network parameters
+var num_nodes = 60; // How many nodes in the simulation
+var num_links = 200; // How many links in the simulation. This parameter is only used by some network generators.
+var num_iters = 100; // How many simulation iterations to perform.
+var update_period = 10; // How long to pause between each network update.
+var groups = { // this object defines each allyship state. each state has a probability of being chosen, and a an info object. The info object informs the simulation of the name of the state ("sexist", "neutral", "ally"), and how that state behaves in terms of proportions in the following order: (sexist behaviour, neutral behaviour, allyship behaviour).
   sexist: {
     prob:groupDist[0],
     info:{
@@ -38,7 +43,7 @@ var groups = {
       prob: [0,0,1]
     }},
 }
-var gender = {
+var gender = { // This object defines the two genders, and the likelihood that each gender will appear in the network.
   Man: {
     prob: 0.8,
     info: {
@@ -53,72 +58,25 @@ var gender = {
   }
 }
 
+// Generate a random graph given the above parameters. This function is defined in networkSim.js. All of the network generator definitions are in networkGenerator.js. This is where the hierarchicalTeams function comes from.
 state = genRandomGraph(num_nodes,num_links, groups, gender, hierarchicalTeams);
 
+// generate a visualization of our random graph on the screen.
 viz = plotGraph(state, window.innerWidth, window.innerHeight);
+
+// perform one update of the visualization, allow the nodes to settle.
 viz = updateGraph(viz, state);
+
+// simulate on step.
 state = simStep(state);
+
+// create an array to store the states at each simulation step.
 stats = [];
+
+// create a tracker variable to track our iterations.
 iter = 0;
 
-/*interval = d3.interval(function (elapsed) {
-  data = simStep(data);
-  viz = updateGraph(viz, data);
-  stats.push(getSummaryStats(data, iter));
-  if(iter >= num_iters){
-    csvFile = ConvertToCSV(JSON.stringify(stats));
-    d3.select("body")
-      .append("input")
-      .attr("type", "button")
-      .attr("value", "Download CSV Summary Statistics")
-      .attr("onclick", "download('AllyshipSim-' + query + '.csv', csvFile)")
-    interval.stop();
-  }
-  iter++
-}, pause_time, 1000);*/
-
-function ConvertToCSV(objArray) {
-    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
-    var str = '';
-    var line = '';
-
-    var header = Object.getOwnPropertyNames(array[0]);
-
-    for(var i=0; i < header.length;i++){
-      if (line != '') line += ','
-
-      line += header[i];
-    }
-
-    str += line + '\r\n';
-
-    for (var i = 0; i < array.length; i++) {
-        var line = '';
-        for (var index in array[i]) {
-            if (line != '') line += ','
-
-            line += array[i][index];
-        }
-
-        str += line + '\r\n';
-    }
-
-    return str;
-}
-
-function download(filename, text) {
-  var element = document.createElement('a');
-  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
-  element.setAttribute('download', filename);
-
-  element.style.display = 'none';
-  document.body.appendChild(element);
-
-  element.click();
-
-  document.body.removeChild(element);
-}
-
+// create all of the variables necessary to convert the svg shown in the browser to a saved video.
 var data = [],
     svg = d3.select("svg"),
     canvas = document.createElement("canvas"),
@@ -129,6 +87,7 @@ var data = [],
     stream = canvas.captureStream(),
     recorder = new MediaRecorder(stream, { mimeType: "video/webm" });
 
+// set up the video recorder.
 recorder.ondataavailable = function(event) {
    if (event.data && event.data.size) {
      data.push(event.data);
@@ -166,6 +125,7 @@ recorder.onstop = () => {
      .attr("controls", true);*/
 };
 
+// Now define the behaviour necessary for the simulation to occur. The setTimeout function will repeat the function inside indefinitely until it's told to stop.
 setTimeout(()=>{
   d3.range(num_iters*update_period).forEach(function(frame){
     queue.defer(drawFrame, frame % update_period);
@@ -186,6 +146,52 @@ setTimeout(()=>{
   });
 }, 2000)
 
+// function used to save the stats as a csv file.
+function ConvertToCSV(objArray) {
+    var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
+    var str = '';
+    var line = '';
+
+    var header = Object.getOwnPropertyNames(array[0]);
+
+    for(var i=0; i < header.length;i++){
+      if (line != '') line += ','
+
+      line += header[i];
+    }
+
+    str += line + '\r\n';
+
+    for (var i = 0; i < array.length; i++) {
+        var line = '';
+        for (var index in array[i]) {
+            if (line != '') line += ','
+
+            line += array[i][index];
+        }
+
+        str += line + '\r\n';
+    }
+
+    return str;
+}
+
+
+// function to download the csv file.
+function download(filename, text) {
+  var element = document.createElement('a');
+  element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+  element.setAttribute('download', filename);
+
+  element.style.display = 'none';
+  document.body.appendChild(element);
+
+  element.click();
+
+  document.body.removeChild(element);
+}
+
+// function used to convert the frame in the browser to a video frame.
 function drawFrame(change, cb) {
   //set the rate at which we update the graph.
   if(change==0){
