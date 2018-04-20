@@ -49,6 +49,25 @@ To generate an initial state of the network, the `genRandomGraph` function takes
 
 Simulating a time step is easy. Simply feed the output of `genRandomGraph` into the `simStep` function, along with a `valence_changes` array, that controls how the network will change based off of a sexist, neutral, or ally interaction, respectively. `value_changes` is an array of 3 numbers, which must add to 1, that is of the form: \["valence change due to a sexist comment", "valence change due to a neutral comment", "valence change due to an allied comment"\]. 
 
+The updates are made as follows:
+
+* Linked ally nodes of another gender will increase a node's valence, by the given formula:
+
+![img](http://www.sciweavers.org/tex2img.php?eq=%20\Delta_{valence}%20%3D%20{Valence%20Change%20Due%20To%20Ally}*%20\frac{Number%20Of%20Neighbour%20NonAllies%20Of%20The%20Other%20Gender}{Number%20Of%20Neighbours}&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
+
+* Linked neutral nodes will increase a node's valence slightly.
+
+* Linked sexist nodes will drastically decrease a node's valence, by the given formula:
+![img](http://www.sciweavers.org/tex2img.php?eq=%20\Delta_{valence}%20%3D%20{Valence%20Change%20Due%20To%20Sexist}*%20\frac{Number%20Of%20Neighbour%20NonAllies%20Of%20The%20Other%20Gender}{Number%20Of%20Neighbours}&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=00)
+
 After each time step, we also generate some summary statistics, defined in `getSummaryStats`. 
 
 ### Visualizing the network
+
+To visualize the network, we leverage the d3 force layout tool, which allows us to quickly and easily visualize complex graphs defined by the force layout graph visualization algorithm.
+
+* Shapes define the group of a node (sexist, neutral, or ally)
+
+* Colours define the gender of the node (Man, or Woman)
+
+* The lines are the connections between nodes. If two nodes are not connected by a line, then they are not interacting throughout the simulation.
