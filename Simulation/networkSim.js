@@ -1,11 +1,49 @@
 /*
   Function devoted to generating the nodes and links required for the simulation to run.
   Parameters:
-    -
-    -
-    -
-    -
-    -
+    - num_nodes: the number of nodes desired in the graph
+    - num_links: the number of links desired in the graph. Only used by some linkGenerators
+    - groupProbs: An Object with some number of group objects that could be assigned to a node. An example groupProbs object:
+      
+      groups = { 
+         sexist: {
+          prob:groupDist[0],
+          info:{
+            name: "Sexist",
+            prob: [1,0,0]
+          }},
+         neutral: {
+          prob:groupDist[1],
+          info:{
+            name: "Neutral",
+            prob: [0,1,0]
+          }},
+        ally: {
+          prob:groupDist[2],
+          info:{
+            name: "Ally",
+            prob: [0,0,1]
+          }},
+      }
+      
+    - genderProbs: same as groupProbs, but to assign gender. Example below:
+    
+      var gender = { 
+        Man: {
+          prob: 0.8,
+          info: {
+            gender: "Man"
+          }
+        },
+        Woman: {
+          prob: 0.2,
+          info: {
+            gender: "Woman"
+          }
+        }
+      }
+      
+    - linkGenerator: a function that takes in an array of nodes, and returns an array of links, defining connections between those nodes.
 
   Returns:
     - Object with two values:
@@ -32,9 +70,8 @@ function genRandomGraph(num_nodes, num_links, groupProbs, genderProbs, linkGener
 
   In addition, we modify the effect of a connection based on a person's position in the network. That is, we multiply the overall change in a person's valence by the proportion of connections that are of the other gender and are not allies.
 */
-function simStep(data){
 
-  var force_changes = [-5,0.5,5];
+function simStep(data, force_changes){
 
   // Go through and calculate the new valence of each person in the network
   data.nodes = data.nodes.map(function(d){
