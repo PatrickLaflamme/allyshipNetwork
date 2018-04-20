@@ -57,6 +57,7 @@ var gender = { // This object defines the two genders, and the likelihood that e
     }
   }
 }
+var valence_changes = [-5,0.5,5]; // variable that defines the amount of change due to an update
 
 // Generate a random graph given the above parameters. This function is defined in networkSim.js. All of the network generator definitions are in networkGenerator.js. This is where the hierarchicalTeams function comes from.
 state = genRandomGraph(num_nodes,num_links, groups, gender, hierarchicalTeams);
@@ -68,7 +69,7 @@ viz = plotGraph(state, window.innerWidth, window.innerHeight);
 viz = updateGraph(viz, state);
 
 // simulate on step.
-state = simStep(state);
+state = simStep(state, valence_changes);
 
 // create an array to store the states at each simulation step.
 stats = [];
@@ -190,7 +191,7 @@ function download(filename, text) {
 function drawFrame(change, cb) {
   //set the rate at which we update the graph.
   if(change==0){
-    state = simStep(state);
+    state = simStep(state, valence_changes);
     viz = updateGraph(viz, state);
     stats.push(getSummaryStats(state, iter));
   }
