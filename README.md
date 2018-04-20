@@ -34,3 +34,8 @@ The simulation code contains the iternal logic driving the simulation, as well a
 
 The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run. All code necessary to generate videos or still images of the networks can be found in the [network generator folder](/network%20generator).
 
+# Useful Resources
+
+For those who may want to learn more about the tools and techniques used in this project, I recommend that you start first by familiarizing yourself with javascript. The entire simulation is done using vanilla javascript, with no additional modules or external code. As such, being familiar with javascript, its intricacies, and quirks is useful. A good basic intro to javascript can be found [here](https://www.w3schools.com/js/default.asp). 
+
+The network visualization is handled using [d3.js](d3js.org). D3 is a powerful visualization tool, that allows very low level control over the features that are used in visualization. While advanced use of this tool requires knowledge of the [DOM](https://www.w3schools.com/js/js_htmldom.asp), one can get a basic understanding of how it works by completing [tutorials online](https://github.com/d3/d3/wiki/tutorials), and using [examples](https://github.com/d3/d3/wiki/Gallery) as templates.
