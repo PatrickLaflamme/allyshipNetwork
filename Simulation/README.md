@@ -16,11 +16,11 @@ Once your SimpleHTTPServer is running, navigate to http://localhost:8000 to view
 
 This simulation project can broadly be broken down into 3 pieces, each of which is tackled by functions in a respective .js file:
 
-1. [Generating a randomized network](#Generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/networkGenerators.js).
+1. [Generating a randomized network](#generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/networkGenerators.js).
 
-2. [Simulating changes in the network](#Simulationg-changes-in-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/networkSim.js). 
+2. [Simulating changes in the network](#simulationg-changes-in-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/networkSim.js). 
 
-3. [Visualizing the network](#Visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/networkViz.js).
+3. [Visualizing the network](#visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/networkViz.js).
 
 
 ### Generating a randomized network
