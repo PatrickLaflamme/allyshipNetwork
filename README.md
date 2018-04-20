@@ -28,12 +28,9 @@ This project is built almost entirely using javascript, and leverages the follow
 
 ## Simulation Code
 
-The simulation code contains the iternal logic driving the simulation, as well as the code necessary to visualize the simulation. Its intended purpose is to simulate the effect of sexism and allyship in simulated corporate environments. This simulation is gender agnostic, meaning that both genders are assumed to be equally likely to be sexist or allies. All simulation code can be found in the [Simulation folder](/Simulation).
-
-### Running the simulation code
+The simulation code contains the iternal logic driving the simulation, as well as the code necessary to visualize the simulation. Its intended purpose is to simulate the effect of sexism and allyship in corporate environments. This simulation is gender agnostic, meaning that both genders are assumed as equally likely to show sexist or allyship behaviour. All simulation code can be found in the [Simulation folder](/Simulation).
 
 ## Network Generation Code
 
-The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run.
+The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run. All code necessary to generate videos or still images of the networks can be found in the [network generator folder](/network\ generator).
 
-### Running the network generation code.
