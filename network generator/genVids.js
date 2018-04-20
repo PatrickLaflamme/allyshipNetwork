@@ -2,21 +2,21 @@ const Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 
 /*
-'osltFpbuDo6sEMJB',
-'RE0QRkb6hoEx87BB',
+'cLNo571Bs5IuP85B'
 */
 
 queries = [
+  'osltFpbuDo6sEMJB',
+  'RE0QRkb6hoEx87BB',
   'O81J2xbjrAIa6QkM',
   '20Kd65GlUC2CIkip',
   '8abzLhBpM1or48tl',
   'g2ULKrZQZ2yFxz93',
-  'cLNo571Bs5IuP85B',
   'uWOtG9YSXJtPmIfa',
   'Ke6Piii6gplcn21b',
   'jDayjkMzzSeBQxjt',
   'DUrWkoKHmRHX1qJl',
-  'rYBVFj6Zs1F2EuVA'
+  'rYBVFj6Zs1F2EuVA',
 ]
 
 searchBuilds = []
@@ -41,17 +41,18 @@ for(i=0;i<searchBuilds.length;i++){
           .viewport(1920,1080)
           .wait('a')
           .click("a")
-          .download("continue")
+          .download()
           .click("input")
-          .download("continue")
-          .wait(1000)
+          .download()
+          .wait(10000)
           .end()
+          .catch(e => console.log(e))
           .then(() => {
             console.log("Downloaded " + searchBuilds[j]);
             j++
           })
           .catch(e => console.log(e))
-        }, i*60000);
+        }, i*100000);
 
 
 }

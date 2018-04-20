@@ -17,7 +17,7 @@ var rng = new Math.seedrandom(query);
 var num_nodes = 60;
 var num_links = 200;
 var num_iters = 100;
-var update_period = 5;
+var update_period = 10;
 var groups = {
   sexist: {
     prob:groupDist[0],
