@@ -32,5 +32,5 @@ The simulation code contains the iternal logic driving the simulation, as well a
 
 ## Network Generation Code
 
-The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run. All code necessary to generate videos or still images of the networks can be found in the [network generator folder](/network generator).
+The Network generation code is relatively simple. It simulates a web browser, loads the localhost:8000 website running the Simulation code, and captures the simulation to video or to images, depending on which script is run. All code necessary to generate videos or still images of the networks can be found in the [network generator folder](/network%20generator).
 
