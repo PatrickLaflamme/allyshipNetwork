@@ -1,6 +1,6 @@
 # Allyship Network Simulation Software
 
-This project was created for the Social Identity Lab. Broadly speaking, the project can be split into two categories, a *Simulation Code* portion, and a *Network Generation* portion. 
+This project was created for the Social Identity Lab by Patrick Laflamme. Broadly speaking, the project can be split into two categories, a *Simulation Code* portion, and a *Network Generation* portion. 
 
 ## Dependencies
 
@@ -25,6 +25,7 @@ This project is built almost entirely using javascript, and leverages the follow
 5. [Node.js](nodejs.org)
    * used in the conversion of in-browser simulation to recorded webm videos.
 
+*NOTE*: This software was written primarily for UNIX based systems (mac and linux). While it's possible to run this software in windows, it has not yet been tested, so bugs are likely to exist.
 
 ## Simulation Code
 
@@ -39,3 +40,5 @@ The Network generation code is relatively simple. It simulates a web browser, lo
 For those who may want to learn more about the tools and techniques used in this project, I recommend that you start first by familiarizing yourself with javascript. The entire simulation is done using vanilla javascript, with no additional modules or external code. As such, being familiar with javascript, its intricacies, and quirks is useful. A good basic intro to javascript can be found [here](https://www.w3schools.com/js/default.asp). 
 
 The network visualization is handled using [d3.js](d3js.org). D3 is a powerful visualization tool, that allows very low level control over the features that are used in visualization. While advanced use of this tool requires knowledge of the [DOM](https://www.w3schools.com/js/js_htmldom.asp), one can get a basic understanding of how it works by completing [tutorials online](https://github.com/d3/d3/wiki/tutorials), and using [examples](https://github.com/d3/d3/wiki/Gallery) as templates.
+
+A very small amount of bash scripting is also done in this project. However, limited knowledge is required in order to effectively use this software. 
