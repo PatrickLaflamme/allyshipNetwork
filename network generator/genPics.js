@@ -1,3 +1,5 @@
+
+// Load dependencies
 const Nightmare = require('nightmare')
 var randomstring = require("randomstring");
 const svg2png = require("svg2png");
@@ -7,6 +9,7 @@ var nImages = process.argv[2];
 
 random = []
 
+// Generate the random seeds we're going to use.
 for(i=0;i<nImages;i++){
   random.push(randomstring.generate(16));
 }
@@ -14,6 +17,8 @@ for(i=0;i<nImages;i++){
 var nightmare = []
 var j = 0
 
+
+// for each random seed, generate a network, simulate it, and then take a picture of the results.
 for(i=0;i<nImages;i++){
   nightmare = new Nightmare({ show: false, height: 1080, width:1920})
 

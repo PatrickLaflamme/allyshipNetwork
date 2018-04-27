@@ -1,10 +1,13 @@
+/*
+NOTE: this code is extremely unstable, and may need to be re-run
+multiple times before you can record all desired random seeds. 
+*/
+
+
 const Nightmare = require('nightmare');
 require('nightmare-inline-download')(Nightmare);
 
-/*
-'cLNo571Bs5IuP85B'
-*/
-
+//set random seeds we want to generate videos for.
 queries = [
   'osltFpbuDo6sEMJB',
   'RE0QRkb6hoEx87BB',
@@ -21,6 +24,7 @@ queries = [
 
 searchBuilds = []
 
+// put a with and without allies simulation into our queue.
 queries.forEach((q)=>{
   searchBuilds.push(q+"&true");
   searchBuilds.push(q+"&false");
@@ -30,6 +34,7 @@ queries.forEach((q)=>{
 var nightmare = []
 var j = 0
 
+// simulate and record each simulation.
 for(i=0;i<searchBuilds.length;i++){
 
   setTimeout(()=>{
@@ -57,8 +62,3 @@ for(i=0;i<searchBuilds.length;i++){
 
 }
 
-/*waitForDownload(info){
-  while(true){
-    if(info.)
-  }
-}*/
