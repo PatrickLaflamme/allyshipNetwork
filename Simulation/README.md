@@ -16,11 +16,11 @@ Once your SimpleHTTPServer is running, navigate to http://localhost:8000 to view
 
 This simulation project can broadly be broken down into 3 pieces, each of which is tackled by functions in a respective .js file:
 
-1. [Generating a randomized network](#generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/networkGenerators.js).
+1. [Generating a randomized network](#generating-a-randomized-network), which is largely handled by the random network generation approaches defined in [networkGenerators.js](/Simulation/NetworkGenerators.js).
 
-2. [Simulating changes in the network](#simulating-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/networkSim.js). 
+2. [Simulating changes in the network](#simulating-the-network) at each step of the simulation. This is handled by the functions defined in [networkSim.js](/Simulation/networkSim.js). 
 
-3. [Visualizing the network](#visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/networkViz.js).
+3. [Visualizing the network](#visualizing-the-network) throughout the simulation. This is handled by the functions defined in [networkViz.js](/Simulation/networkViz.js).
 
 
 ### Generating a randomized network
@@ -35,13 +35,13 @@ There are a number of approaches to generating a random network that were explor
 
 * `HierarchicalTeams` generates a hierarchy of fully connected teams. This is the approach currently used in the simulation.
 
-This section of the project is distinct from the other two in that it's much more abstract. None of the functions within the [networkGenerators.js](/networkGenerators.js) file are directly related to the simulation, but are rather helper functions to define a network. Since the shape of the network presumably has a significant impact on the outcome, it was decided that this portion of the project should be kept separate and distinct from the rest.
+This section of the project is distinct from the other two in that it's much more abstract. None of the functions within the [networkGenerators.js](/Simulation/NetworkGenerators.js) file are directly related to the simulation, but are rather helper functions to define a network. Since the shape of the network presumably has a significant impact on the outcome, it was decided that this portion of the project should be kept separate and distinct from the rest.
 
 ### Simulating the network
 
 The simulation portion of this project also seemed to be divisible. First, we must generate an initial state for the network, and then we must iteratively update the state of the network based upon a defined set of rules. We will discuss how the simulation works, in that order.
 
-To generate an initial state of the network, the `genRandomGraph` function takes a number of parameters, defined in [networkSim.js](/networkSim.js), and creates a graph to be used in the simulation, in the form of an object with two values: 
+To generate an initial state of the network, the `genRandomGraph` function takes a number of parameters, defined in [networkSim.js](/Simulation/networkSim.js), and creates a graph to be used in the simulation, in the form of an object with two values: 
 
 * `nodes`, which is an array of all the nodes in the graph. At the beginning of the simulation, each node is assigned an initial valence score of 100, saved in the node object's `node.r` parameter.
 
