@@ -53,12 +53,13 @@ The updates are made as follows:
 
 * Linked ally nodes of another gender will increase a node's valence, by the given formula:
 
-![img](http://www.sciweavers.org/tex2img.php?eq=%20\Delta_{valence}%20%3D%20{Valence%20Change%20Due%20To%20Ally}*%20\frac{Number%20Of%20Neighbour%20NonAllies%20Of%20The%20Other%20Gender}{Number%20Of%20Neighbours}&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=0)
+![img](http://mathurl.com/ya7xsuox.png)
+
 
 * Linked neutral nodes will increase a node's valence slightly.
 
 * Linked sexist nodes will drastically decrease a node's valence, by the given formula:
-![img](http://www.sciweavers.org/tex2img.php?eq=%20\Delta_{valence}%20%3D%20{Valence%20Change%20Due%20To%20Sexist}*%20\frac{Number%20Of%20Neighbour%20NonAllies%20Of%20The%20Other%20Gender}{Number%20Of%20Neighbours}&bc=White&fc=Black&im=jpg&fs=12&ff=arev&edit=00)
+![img](http://mathurl.com/y8n99x6c.png)
 
 After each time step, we also generate some summary statistics, defined in `getSummaryStats`. 
 
